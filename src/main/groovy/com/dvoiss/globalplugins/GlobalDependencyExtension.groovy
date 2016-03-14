@@ -17,7 +17,7 @@ class GlobalDependencyExtension {
     }
 
     void addAndroid(String classpath, String id) {
-        dependencies.add(new GlobalDependency(classpath, id, isAndroid))
+        add(classpath, id, isAndroid)
     }
 
     void add(String classpath, String id, Predicate predicate) {

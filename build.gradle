@@ -23,10 +23,10 @@ dependencies {
 }
 
 group 'com.dvoiss.globalplugins'
-version '1.0-SNAPSHOT'
+version '1.0'
 
 pluginBundle {
-    website = 'http://www.gradle.org/'
+    website = 'https://github.com/dvoiss/global-gradle-plugin'
     vcsUrl = 'https://github.com/dvoiss/global-gradle-plugin'
     description = 'Apply plugins globally to all Gradle projects.'
     tags = ['gradle', 'global', 'android', 'plugin', 'apply', 'dependency', 'globally', 'initscript', 'init']

@@ -16,7 +16,7 @@ initscript {
         }
     }
     dependencies {
-        classpath "gradle.plugin.com.dvoiss.globalplugins:global-gradle-plugin:1.0-SNAPSHOT"
+        classpath "gradle.plugin.com.dvoiss.globalplugins:global-gradle-plugin:1.0"
     }
 }
 
@@ -46,7 +46,7 @@ initscript {
         }
     }
     dependencies {
-        classpath "gradle.plugin.com.dvoiss.globalplugins:global-gradle-plugin:1.0-SNAPSHOT"
+        classpath "gradle.plugin.com.dvoiss.globalplugins:global-gradle-plugin:1.0"
     }
 }
 

@@ -2,3 +2,5 @@
 build
 .idea
 global-gradle-plugin.*
+local.properties
+.gradle

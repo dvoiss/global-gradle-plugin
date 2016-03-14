@@ -1,0 +1,56 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        jcenter()
+    }
+
+    dependencies {
+        classpath 'nu.studer:gradle-plugindev-plugin:1.0.3'
+    }
+}
+
+apply plugin: 'groovy'
+apply plugin: 'maven'
+apply plugin: 'idea'
+apply plugin: 'nu.studer.plugindev'
+
+group 'com.dvoiss.globalplugins'
+version '1.0-SNAPSHOT'
+
+dependencies {
+    compile gradleApi()
+    compile localGroovy()
+
+    compile 'org.codehaus.groovy:groovy-all:2.4.4'
+    testCompile group: 'junit', name: 'junit', version: '4.11'
+}
+
+plugindev {
+    pluginId = 'com.dvoiss.global-plugins'
+    pluginImplementationClass 'com.dvoiss.globalplugins.GlobalDependencyPlugin'
+    pluginDescription 'Gradle plugin for your ~./gradle init-script that applies other plugins to all gradle projects.'
+    pluginLicenses 'MIT'
+    pluginTags 'gradle', 'plugin', 'global', 'dependency', 'common'
+    authorId 'dvoiss'
+    authorName 'David Voiss'
+    authorEmail 'davidvoiss@gmail.com'
+    projectUrl 'https://github.com/dvoiss/global-gradle-plugin'
+    projectInceptionYear '2016'
+    done() // do not omit this
+}
+
+/*
+bintray {
+    user = "$BINTRAY_USER"
+    key = "$BINTRAY_API_KEY"
+    pkg.repo = 'gradle-plugins'
+}
+*/
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            repository(url: mavenLocal().url)
+        }
+    }
+}

@@ -3,6 +3,8 @@ Global Gradle Plugin Applier
 
 This plugin will apply specified gradle plugins to all gradle projects run on your machine. To do this it must be added in an `initscript` at `~/.gradle/init.gradle` or in a custom file under `~/.gradle/init.d/` (such as `~/.gradle/init.d/global-plugins.gradle`).
 
+*Obligatory Disclaimer:* This is not well tested and was made for my personal usage.
+
 Usage
 -----
 
@@ -23,14 +25,31 @@ apply plugin: com.dvoiss.globalplugins.GlobalDependencyPlugin
 
 Then use the `globalDependencies` closure in an `allprojects` closure so the dependencies are available in all your projects. See the example below. The `globalDependencies` closure has the following options available:
 
-  * `repos`: A closure specifying the repos for your plugins (jcenter(), mavenLocal(), maven { url ... }).
+  * `repos`: A closure specifying the repos for your plugins (`jcenter()`, `mavenLocal()`, `maven { url ... }`).
   * `add`: A method that takes the `classpath` for your plugin as the first parameter and the plugin ID as the second.
     * Another `add` variant accepts a predicate as a third argument. This predicate takes the name of another plugin when that plugin is applied as a condition for when to apply the plugin being passed in. See the example below.
   * `addAndroid`: Add the `classpath` and plugin ID as the first and second arguments. This is a short-hand method that uses a predicate to dictate that the plugin being passed in should only be applied after Android configuration is complete.
 
-Example:
+
+Examples
+--------
+
+[This gist](https://gist.github.com/dvoiss/37cb797b42a00a9a2db6) encapsulates the code below and applies the plugin and `allprojects` block from a remote script.
+
+Example from `~/.gradle/init.d/global-plugins.gradle`:
 
 ```groovy
+initscript {
+    repositories {
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+    dependencies {
+        classpath "gradle.plugin.com.dvoiss.globalplugins:global-gradle-plugin:1.0-SNAPSHOT"
+    }
+}
+
 apply plugin: com.dvoiss.globalplugins.GlobalDependencyPlugin
 
 // add dependencies to all projects
@@ -73,3 +92,4 @@ allprojects {
 }
 
 ```
+

@@ -1,21 +1,19 @@
 buildscript {
     repositories {
-        mavenCentral()
-        jcenter()
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
     }
 
     dependencies {
-        classpath 'nu.studer:gradle-plugindev-plugin:1.0.3'
+        classpath "com.gradle.publish:plugin-publish-plugin:0.9.4"
     }
 }
 
-apply plugin: 'groovy'
-apply plugin: 'maven'
-apply plugin: 'idea'
-apply plugin: 'nu.studer.plugindev'
 
-group 'com.dvoiss.globalplugins'
-version '1.0-SNAPSHOT'
+apply plugin: "com.gradle.plugin-publish"
+apply plugin: 'maven'
+apply plugin: 'groovy'
 
 dependencies {
     compile gradleApi()
@@ -25,27 +23,22 @@ dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.11'
 }
 
-plugindev {
-    pluginId = 'com.dvoiss.global-plugins'
-    pluginImplementationClass 'com.dvoiss.globalplugins.GlobalDependencyPlugin'
-    pluginDescription 'Gradle plugin for your ~./gradle init-script that applies other plugins to all gradle projects.'
-    pluginLicenses 'MIT'
-    pluginTags 'gradle', 'plugin', 'global', 'dependency', 'common'
-    authorId 'dvoiss'
-    authorName 'David Voiss'
-    authorEmail 'davidvoiss@gmail.com'
-    projectUrl 'https://github.com/dvoiss/global-gradle-plugin'
-    projectInceptionYear '2016'
-    done() // do not omit this
-}
+group 'com.dvoiss.globalplugins'
+version '1.0-SNAPSHOT'
 
-/*
-bintray {
-    user = "$BINTRAY_USER"
-    key = "$BINTRAY_API_KEY"
-    pkg.repo = 'gradle-plugins'
+pluginBundle {
+    website = 'http://www.gradle.org/'
+    vcsUrl = 'https://github.com/dvoiss/global-gradle-plugin'
+    description = 'Apply plugins to all Gradle projects in one place.'
+    tags = ['gradle', 'global', 'android', 'plugin', 'apply', 'dependency', 'globally', 'initscript', 'init']
+
+    plugins {
+        globalDependencyPlugin {
+            id = 'com.dvoiss.globalplugins'
+            displayName = 'Gradle Global Plugin'
+        }
+    }
 }
-*/
 
 uploadArchives {
     repositories {

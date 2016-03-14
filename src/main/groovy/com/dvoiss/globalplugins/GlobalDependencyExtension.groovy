@@ -1,20 +1,34 @@
 package com.dvoiss.globalplugins
 
+import java.util.function.Predicate
+
+import static com.dvoiss.globalplugins.GlobalDependencyUtils.isAndroid
+
 class GlobalDependencyExtension {
-    Map<String, String> dependencies = new LinkedHashMap()
-    def callback
+    List<GlobalDependency> dependencies = new LinkedList()
+    Closure reposClosure
 
-    private Closure<Void> configClosure
-
-    void add(Map<String, String> dependencies) {
-        this.dependencies.putAll(dependencies)
+    void repos(Closure reposClosure) {
+        this.reposClosure = reposClosure
     }
 
-    void onApply(def callback) {
-        this.callback = callback
+    void add(String classpath, String id) {
+        add(classpath, id, null)
     }
 
-    boolean shouldApply(String pluginClassAdded, String pluginId) {
-        return callback == null || callback(pluginClassAdded, pluginId)
+    void addAndroid(String classpath, String id) {
+        dependencies.add(new GlobalDependency(classpath, id, isAndroid))
+    }
+
+    void add(String classpath, String id, Predicate predicate) {
+        dependencies.add(new GlobalDependency(classpath, id, predicate))
+    }
+
+    List<String> getClasspaths() {
+        return dependencies.collect({ it.classpath })
+    }
+
+    List<String> getIds() {
+        return dependencies.collect({ it.id })
     }
 }

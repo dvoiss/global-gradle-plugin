@@ -28,7 +28,7 @@ version '1.0-SNAPSHOT'
 pluginBundle {
     website = 'http://www.gradle.org/'
     vcsUrl = 'https://github.com/dvoiss/global-gradle-plugin'
-    description = 'Apply plugins to all Gradle projects in one place.'
+    description = 'Apply plugins globally to all Gradle projects.'
     tags = ['gradle', 'global', 'android', 'plugin', 'apply', 'dependency', 'globally', 'initscript', 'init']
 
     plugins {

@@ -59,7 +59,7 @@ class GlobalDependencyPlugin implements Plugin<Gradle> {
     private static void addDependencies(GlobalDependencyExtension extension,
                                         Project project,
                                         Plugin plugin) {
-        if (!project.plugins.findPlugin(plugin.class.name)) {
+        if (!project.getPlugins().findPlugin(plugin.class.name)) {
             extension.getDependencies().each { dependency ->
                 if (shouldApplyPlugin(dependency, plugin.class.name)) {
                     project.apply plugin: dependency.getId()
@@ -78,13 +78,13 @@ class GlobalDependencyPlugin implements Plugin<Gradle> {
     private static Object getAccessibleBuildScript(Project project) throws Exception {
         project.getBuildScriptSource()
 
-        ScriptHandler bs = project.getBuildscript()
-        bs.getDependencies()
+        ScriptHandler buildscript = project.getBuildscript()
+        buildscript.getDependencies()
 
-        Field ccf = bs.class.getDeclaredField("classpathConfiguration")
-        ccf.setAccessible(true)
+        Field classpathConfig = buildscript.class.getDeclaredField("classpathConfiguration")
+        classpathConfig.setAccessible(true)
 
-        return ccf.get(bs)
+        return classpathConfig.get(buildscript)
     }
 
     /**
@@ -93,9 +93,9 @@ class GlobalDependencyPlugin implements Plugin<Gradle> {
      * Derived from: http://stackoverflow.com/a/34818018.
      */
     private static void addClasspaths(GlobalDependencyExtension extension, Project project) {
-        Object cc = null
+        Object buildscript = null
         try {
-            cc = getAccessibleBuildScript(project)
+            buildscript = getAccessibleBuildScript(project)
         } catch (Exception e) {
             log.error "Error: Could not get accessible build script."
             log.error e.message
@@ -107,8 +107,8 @@ class GlobalDependencyPlugin implements Plugin<Gradle> {
             return
         }
 
-        extension.getClasspaths().each { c ->
-            cc.dependencies.add(project.dependencies.create(c))
+        extension.getClasspaths().each { classpath ->
+            buildscript.dependencies.add(project.getDependencies().create(classpath))
         }
     }
 

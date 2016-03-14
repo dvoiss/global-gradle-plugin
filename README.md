@@ -6,25 +6,15 @@ This plugin will apply specified gradle plugins to all gradle projects run on yo
 Usage
 -----
 
-### Gradle 2.1 and above
-In your init file add the following:
-
-```groovy
-plugins {
-    id "com.dvoiss.globalplugins" version "1.0-SNAPSHOT"
-}
-```
-
-### Gradle 1.x/2.0
-In your init file add the following:
-
 ```groovy
 initscript {
     repositories {
-        jcenter()
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
     }
     dependencies {
-        classpath "com.dvoiss.globalplugins:global-gradle-plugin:1.0-SNAPSHOT"
+        classpath "gradle.plugin.com.dvoiss.globalplugins:global-gradle-plugin:1.0-SNAPSHOT"
     }
 }
 

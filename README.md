@@ -1,4 +1,6 @@
-[![TravisCI](https://travis-ci.org/dvoiss/global-gradle-plugin.svg?branch=master)][travis]
+[![build status][travis-image]][travis-url]
+[travis-image]: https://img.shields.io/travis/dvoiss/global-gradle-plugin.svg?style=flat-square
+[travis-url]: https://travis-ci.org/dvoiss/global-gradle-plugin
 
 Global Gradle Plugin Applier
 ============================

@@ -22,7 +22,7 @@ dependencies {
 }
 
 group 'com.dvoiss.globalplugins'
-version '1.0.1-SNAPSHOT'
+version '1.0.1'
 
 pluginBundle {
     website = 'https://github.com/dvoiss/global-gradle-plugin'

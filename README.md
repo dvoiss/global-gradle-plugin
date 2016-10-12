@@ -41,7 +41,7 @@ Examples
 
 In the example below I add the [godot plugin](https://github.com/hannesstruss/godot) so that *all* my gradle projects *anywhere* on my machine will log build times in the background and also have a task specified by godot to generate a report that tells me how long I spend per week, month, etc. waiting for the given project to build.
 
-This is an example of a plugin I want to use, but don't want to individually add to each project and don't want to commit to version control when I may be the only finding use in it.
+This is an example of a plugin you may want to use, but don't want to individually add to each project and also don't always want to commit to version control when your team may not use it or may have their own plugins that they prefer.
 
 ```groovy
 initscript {
@@ -70,7 +70,9 @@ allprojects {
 }
 ```
 
-In this extended Example a predicate is passed to the `add` method to check for the plugin IDs of the Android plugins. This is necessary so the dexcount plugin is only applied after the Android plugins are configured. The [dexcount plugin](https://github.com/KeepSafe/dexcount-gradle-plugin) plugin will be applied to *all* Android projects and will log the dex-count of each project automatically. Trying to apply an Android plugin before Android is configured would result in an error.
+In this extended Example a predicate is passed to the `add` method to check for the plugin IDs of the Android plugins.
+
+This is necessary so the dexcount plugin is only applied after the Android plugins are configured. The [dexcount plugin](https://github.com/KeepSafe/dexcount-gradle-plugin) plugin will be applied to *all* Android projects and will log the dex-count of each project automatically. Trying to apply an Android plugin before Android is configured would result in an error.
 
 ```groovy
 allprojects {
@@ -105,7 +107,7 @@ allprojects {
 Notes
 -----
 
-Gradle 2.1 introduced a `plugins` block that can be used to add plugins. This will not work with this plugin because it needs to be in a project's `buildscript` block. There are also the following issues:
+Gradle 2.1 introduced a `plugins` block that can be used to add plugins. This will not work with this plugin because the `plugins` block needs to be in a project's `buildscript` block whereas this plugin works from the `allprojects` block. There are also the following issues:
 
 1. [How do I apply a plugin to a project from a (shared) applied .gradle file?](https://discuss.gradle.org/t/how-do-i-apply-a-plugin-to-a-project-from-a-shared-applied-gradle-file/7508). To apply a plugin from an external buildscript, our `init.gradle` in this case, we have to use the fully qualified class name (`com.dvoiss.globalplugins.GlobalDependencyPlugin`) instead of the ID (`com.dvoiss.globalplugins`).
 2. [Cannot load custom plugin (from outside distribution) to project from an init script](https://issues.gradle.org/browse/GRADLE-2407). There is an open ticket on gradle.org that will obsolete this plugin once resolved.

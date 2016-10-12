@@ -107,7 +107,10 @@ allprojects {
 Notes
 -----
 
-Gradle 2.1 introduced a `plugins` block that can be used to add plugins. This will not work with this plugin because the `plugins` block needs to be in a project's `buildscript` block whereas this plugin works from the `allprojects` block. There are also the following issues:
+Gradle 2.1 introduced a `plugins` block that can be used to add plugins. This will not work with this plugin because the `plugins` block needs to be in an individual project's `buildscript` block whereas this plugin works from the `allprojects` block. 
+
+"Why not just use `apply from` in the `allprojects`?" This will not work for `allprojects` as expected. Read the links below for more information.
 
 1. [How do I apply a plugin to a project from a (shared) applied .gradle file?](https://discuss.gradle.org/t/how-do-i-apply-a-plugin-to-a-project-from-a-shared-applied-gradle-file/7508). To apply a plugin from an external buildscript, our `init.gradle` in this case, we have to use the fully qualified class name (`com.dvoiss.globalplugins.GlobalDependencyPlugin`) instead of the ID (`com.dvoiss.globalplugins`).
-2. [Cannot load custom plugin (from outside distribution) to project from an init script](https://issues.gradle.org/browse/GRADLE-2407). There is an open ticket on gradle.org that will obsolete this plugin once resolved.
+2. [Applying plugin dependencies from external gradle file](https://discuss.gradle.org/t/applying-plugin-dependencies-from-external-gradle-file/4720). Some options include creating a custom Gradle distribution.
+3. [Cannot load custom plugin (from outside distribution) to project from an init script](https://issues.gradle.org/browse/GRADLE-2407). There is an open ticket on gradle.org that may obsolete this plugin once resolved.

@@ -1,13 +1,15 @@
+[![TravisCI](https://travis-ci.org/dvoiss/global-gradle-plugin.svg?branch=master)][travis]
+
 Global Gradle Plugin Applier
 ============================
 
-This plugin will apply specified gradle plugins to all gradle projects run on your machine. To do this it must be added in an `initscript` at `~/.gradle/init.gradle` or in a custom file under `~/.gradle/init.d/` (such as `~/.gradle/init.d/global-plugins.gradle`).
-
-*Obligatory Disclaimer:* This is not well tested and was made for my personal usage.
+This plugin applies specified plugins to *all* gradle projects run on your machine. This is useful for using plugins without needing to add them to every project and without adding them to version control. See examples below for more information.
 
 Usage
 -----
 
+Open the `~/.gradle/init.gradle` file and add the code below.
+
 ```groovy
 initscript {
     repositories {
@@ -23,20 +25,21 @@ initscript {
 apply plugin: com.dvoiss.globalplugins.GlobalDependencyPlugin
 ```
 
-Then use the `globalDependencies` closure in an `allprojects` closure so the dependencies are available in all your projects. See the example below. The `globalDependencies` closure has the following options available:
+Then use the plugin's `globalDependencies` closure inside the `allprojects` block to apply the dependencies to all your projects (see the examples below).
+
+The `globalDependencies` closure has the following options available:
 
   * `repos`: A closure specifying the repos for your plugins (`jcenter()`, `mavenLocal()`, `maven { url ... }`).
-  * `add`: A method that takes the `classpath` for your plugin as the first parameter and the plugin ID as the second.
-    * Another `add` variant accepts a predicate as a third argument. This predicate takes the name of another plugin when that plugin is applied as a condition for when to apply the plugin being passed in. See the example below.
-  * `addAndroid`: Add the `classpath` and plugin ID as the first and second arguments. This is a short-hand method that uses a predicate to dictate that the plugin being passed in should only be applied after Android configuration is complete.
+  * `add`: A method that takes the `classpath` for your plugin as the first parameter and the plugin ID as the second. There is an optional third parameter that takes a predicate (see example below).
 
+If you don't want to use `init.gradle` a custom file under `~/.gradle/init.d/` (such as `~/.gradle/init.d/global-plugins.gradle`) can be used instead.
 
 Examples
 --------
 
-[This gist](https://gist.github.com/dvoiss/37cb797b42a00a9a2db6) encapsulates the code below and applies the plugin and `allprojects` block from a remote script.
+In the example below I add the [godot plugin](https://github.com/hannesstruss/godot) so that *all* my gradle projects *anywhere* on my machine will log build times in the background and also have a task specified by godot to generate a report that tells me how long I spend per week, month, etc. waiting for the given project to build.
 
-Example from `~/.gradle/init.d/global-plugins.gradle`:
+This is an example of a plugin I want to use, but don't want to individually add to each project and don't want to commit to version control when I may be the only finding use in it.
 
 ```groovy
 initscript {
@@ -52,44 +55,55 @@ initscript {
 
 apply plugin: com.dvoiss.globalplugins.GlobalDependencyPlugin
 
-// add dependencies to all projects
 allprojects {
     globalDependencies {
-
-        // repos for plugins added below, add other repos including mavenLocal() for local plugins
-
+        // Use the repos block to add the repos needed for the plugins: jcenter, maven, mavenLocal, etc.
         repos {
             jcenter()
         }
 
-        // add <PLUGIN CLASSPATH>, <PLUGIN ID>
-
+        // Pass the plugin's classpath and plugin ID to the add method and it will now be used in every project.
         add "de.hannesstruss:godot:+", 'de.hannesstruss.godot'
-
-        // android dependencies, these should only be applied after
-        // the android plugins or else an error will occur
-
-        def androidPlugins = [
-            'com.android.build.gradle.AppPlugin',
-            'com.android.build.gradle.LibraryPlugin',
-            'com.android.build.gradle.TestPlugin'
-        ]
-
-        // Is the plugin that is passed into the predicate
-        // one of the android plugins in the list above?
-
-        def afterAndroidPluginPredicate = { plugin -> androidPlugins.contains(plugin) }
-
-        // Pass this predicate as the third argument so that this android plugin
-        // is only ran after android configuration has taken place
-
-        add 'com.getkeepsafe.dexcount:dexcount-gradle-plugin:0.4.2', 'com.getkeepsafe.dexcount', afterAndroidPluginPredicate
-
-        // special short-hand for Android, this does the same thing as above
-
-        addAndroid 'com.getkeepsafe.dexcount:dexcount-gradle-plugin:0.4.2', 'com.getkeepsafe.dexcount'
     }
 }
-
 ```
 
+In this extended Example a predicate is passed to the `add` method to check for the plugin IDs of the Android plugins. This is necessary so the dexcount plugin is only applied after the Android plugins are configured. The [dexcount plugin](https://github.com/KeepSafe/dexcount-gradle-plugin) plugin will be applied to *all* Android projects and will log the dex-count of each project automatically. Trying to apply an Android plugin before Android is configured would result in an error.
+
+```groovy
+allprojects {
+    globalDependencies {
+        // The Android dexcount plugin needs to be applied after the plugins with these IDs are configured, 
+        // we will pass this predicate into the add method below.
+        def afterAndroidPluginPredicate = { plugin -> 
+            androidPlugins.contains([
+                'com.android.build.gradle.AppPlugin',
+                'com.android.build.gradle.LibraryPlugin',
+                'com.android.build.gradle.TestPlugin'
+            ])
+        }
+
+        // The following "dexcount" plugin is for Android projects only and so will need to be applied after 
+        // Android configuration has taken place. The predicate above is passed as an optional third parameter here. 
+        add 'com.getkeepsafe.dexcount:dexcount-gradle-plugin:0.5.6', 'com.getkeepsafe.dexcount', afterAndroidPluginPredicate
+    }
+}
+```
+
+The above example has a convenient built in method for Android that does the same as the code above:
+
+```groovy
+allprojects {
+    globalDependencies {
+        addAndroid 'com.getkeepsafe.dexcount:dexcount-gradle-plugin:0.5.6', 'com.getkeepsafe.dexcount'
+    }
+}
+```
+
+Notes
+-----
+
+Gradle 2.1 introduced a `plugins` block that can be used to add plugins. This will not work with this plugin because it needs to be in a project's `buildscript` block. There are also the following issues:
+
+1. [How do I apply a plugin to a project from a (shared) applied .gradle file?](https://discuss.gradle.org/t/how-do-i-apply-a-plugin-to-a-project-from-a-shared-applied-gradle-file/7508). To apply a plugin from an external buildscript, our `init.gradle` in this case, we have to use the fully qualified class name (`com.dvoiss.globalplugins.GlobalDependencyPlugin`) instead of the ID (`com.dvoiss.globalplugins`).
+2. [Cannot load custom plugin (from outside distribution) to project from an init script](https://issues.gradle.org/browse/GRADLE-2407). There is an open ticket on gradle.org that will obsolete this plugin once resolved.

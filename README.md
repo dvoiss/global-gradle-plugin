@@ -7,7 +7,7 @@ Global Gradle Plugin Applier
 
 This plugin applies specified plugins to *all* gradle projects run on your machine. This is useful for using plugins without needing to add them to every project and without adding them to version control. See examples below for more information.
 
-**Important Note**: Be careful with the plugins you add. Builds should be portable and consistent and certain plugins could have side effects. In the examples below the plugins used add reporting tasks and extra information to the output.
+**Important Note**: Be careful with the plugins you add. Builds should be portable and consistent and certain plugins could have side effects to the builds. In the examples below the plugins used add reporting tasks and extra information to the output.
 
 Usage
 -----

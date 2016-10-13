@@ -7,6 +7,8 @@ Global Gradle Plugin Applier
 
 This plugin applies specified plugins to *all* gradle projects run on your machine. This is useful for using plugins without needing to add them to every project and without adding them to version control. See examples below for more information.
 
+**Important Note**: Be careful with the plugins you add. Builds should be portable and consistent and certain plugins could have side effects. In the examples below the plugins used add reporting tasks and extra information to the output.
+
 Usage
 -----
 
@@ -72,7 +74,7 @@ allprojects {
 
 In this extended Example a predicate is passed to the `add` method to check for the plugin IDs of the Android plugins.
 
-This is necessary so the dexcount plugin is only applied after the Android plugins are configured. The [dexcount plugin](https://github.com/KeepSafe/dexcount-gradle-plugin) plugin will be applied to *all* Android projects and will log the dex-count of each project automatically. Trying to apply an Android plugin before Android is configured would result in an error.
+This is necessary so the dexcount plugin is only applied after the Android plugins are configured. The [dexcount plugin](https://github.com/KeepSafe/dexcount-gradle-plugin) will be applied to *all* Android projects and will log the dex-count of each project automatically. Trying to apply an Android plugin before Android is configured would result in an error.
 
 ```groovy
 allprojects {
